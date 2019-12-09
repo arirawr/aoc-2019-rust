@@ -24,6 +24,9 @@ struct Coordinate {
     y: i32
 }
 
+#[derive(Debug)]
+struct TwoInts (u32,u32);
+
 #[derive(Copy, Clone, Debug)]
 enum LineSegment {
     LineSegmentHorizontal {
@@ -42,6 +45,16 @@ enum LineSegment {
 pub fn aoc_3_1() -> u32 {
     let data = parse_data();
     closest(find_matches(&data))
+}
+
+pub fn aoc_3_2() -> u32 {
+    let data = parse_data();
+    
+    let steps: Vec<TwoInts> = find_matches(&data).iter().map(|c| {
+        TwoInts(steps_until(c, &data[0]), steps_until(c, &data[1]))
+    }).collect();
+
+    steps.iter().map(|x| x.0 + x.1).min().unwrap()
 }
 
 /* HELPERS */
@@ -127,6 +140,55 @@ fn get_line_segments(directions: &Vec<DirectionInstruction>) -> Vec<LineSegment>
         }
     }
     segments
+}
+
+fn steps_until(point: &Coordinate, directions: &Vec<DirectionInstruction>) -> u32 {
+    let mut steps: u32 = 0;
+    let mut current_coord = Coordinate { x: 0, y: 0 };
+
+    for d in directions {
+        let dist = d.distance;
+        match d.direction {
+            Direction::Up => { 
+                for _ in 0..dist {
+                    current_coord.y += 1;
+                    steps += 1;
+                    if current_coord.x == point.x && current_coord.y == point.y {
+                        return steps
+                    }
+                } 
+            },
+            Direction::Down => { 
+                for _ in 0..dist {
+                    current_coord.y -= 1;
+                    steps += 1;
+                    if current_coord.x == point.x && current_coord.y == point.y {
+                        return steps
+                    }
+                }
+            },
+            Direction::Right => { 
+                for _ in 0..dist {
+                    current_coord.x += 1;
+                    steps += 1;
+                    if current_coord.x == point.x && current_coord.y == point.y {
+                        return steps
+                    }
+                }
+            },
+            Direction::Left => { 
+                for _ in 0..dist {
+                    current_coord.x -= 1;
+                    steps += 1;
+                    if current_coord.x == point.x && current_coord.y == point.y {
+                        return steps
+                    }
+                }
+            },
+            _ => ()
+        }
+    }
+    steps
 }
 
 fn find_matches(data: &Vec<Vec<DirectionInstruction>>) -> Vec<Coordinate> {
