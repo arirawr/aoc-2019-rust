@@ -1,13 +1,5 @@
 /* ----- Day 2 ----- */
-
-const AOC_2_INPUT: [u32; 148] = [
-    1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 10, 19, 1, 19, 5, 23, 2, 23, 6, 27, 1,
-    27, 5, 31, 2, 6, 31, 35, 1, 5, 35, 39, 2, 39, 9, 43, 1, 43, 5, 47, 1, 10, 47, 51, 1, 51, 6, 55,
-    1, 55, 10, 59, 1, 59, 6, 63, 2, 13, 63, 67, 1, 9, 67, 71, 2, 6, 71, 75, 1, 5, 75, 79, 1, 9, 79,
-    83, 2, 6, 83, 87, 1, 5, 87, 91, 2, 6, 91, 95, 2, 95, 9, 99, 1, 99, 6, 103, 1, 103, 13, 107, 2,
-    13, 107, 111, 2, 111, 10, 115, 1, 115, 6, 119, 1, 6, 119, 123, 2, 6, 123, 127, 1, 127, 5, 131,
-    2, 131, 6, 135, 1, 135, 2, 139, 1, 139, 9, 0, 99, 2, 14, 0,
-];
+use crate::aoc;
 
 enum OpcodeType {
     Add = 1,
@@ -22,13 +14,13 @@ struct Opcode {
 }
 
 pub fn aoc_2_1() -> u32 {
-    calculate_0(AOC_2_INPUT)
+    calculate_0(parse_data())
 }
 
 pub fn aoc_2_2() -> u32 {
     for a in 0..100 {
         for b in 0..100 {
-            let mut data = AOC_2_INPUT;
+            let mut data = parse_data();
             data[1] = a;
             data[2] = b;
             if calculate_0(data) == 19690720 {
@@ -39,9 +31,14 @@ pub fn aoc_2_2() -> u32 {
     0
 }
 
-fn input_to_opcode(input: &[u32; 148]) -> Vec<Opcode> {
+fn parse_data() -> Vec<u32> {
+    let string = aoc::util::read_input(2).unwrap();
+    string.split(",").map(|i| i.parse().unwrap()).collect()
+}
+
+fn input_to_opcode(input: &Vec<u32>) -> Vec<Opcode> {
     let mut codes: Vec<Opcode> = Vec::new();
-    for chunk in input.chunks(4) {
+    for chunk in input.chunks_exact(4) {
         let code = Opcode {
             opcode: match chunk[0] {
                 1 => OpcodeType::Add,
@@ -56,7 +53,7 @@ fn input_to_opcode(input: &[u32; 148]) -> Vec<Opcode> {
     codes
 }
 
-fn calculate_0(input: [u32; 148]) -> u32 {
+fn calculate_0(input: Vec<u32>) -> u32 {
     let codes = input_to_opcode(&input);
     let mut data = input;
     for code in codes {
