@@ -12,6 +12,6 @@ fn main() {
     println!("Part 2: {}", aoc::day_2::aoc_2_2());
 
     println!("\nDay 3");
-    //aoc::day_3::aoc_3_1();
+    println!("Part 1: {}", aoc::day_3::aoc_3_1());
 
 }
